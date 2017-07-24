@@ -21,9 +21,15 @@
     <ClInclude Include="grabcut_sc.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="SLIC.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="SLIC.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

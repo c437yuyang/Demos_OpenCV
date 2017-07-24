@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{9A58D055-1F03-4B4F-B57F-951F6A106A55}</ProjectGuid>
+    <ProjectGuid>{9502B1FC-B2AC-439A-9878-3BD0D14BCE9A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>My06_02_grabcut_official_example</RootNamespace>
+    <RootNamespace>My06_04_grabcut_extract</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -148,12 +148,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="grabcut.cpp" />
-    <ClCompile Include="grabcut_sc.cpp" />
-    <ClCompile Include="precomp.cpp" />
+    <ClInclude Include="gcgraph.hpp" />
+    <ClInclude Include="grabcut_sc.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="gcgraph.hpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

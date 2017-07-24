@@ -20,10 +20,10 @@ static void getBinMask(const Mat& comMask, Mat& binMask)
 int main()
 {
 
-	//Rect rect(170, 150, 700 - 170, 500 - 150);
-	//Mat src = imread("3dIMG_ 2_resize.jpg");
-	Rect rect(480, 300, 1350 - 480, 900 - 300);
-	Mat src = imread("64_¸´ÔÓ±³¾°.jpg");
+	Rect rect(170, 150, 700 - 170, 500 - 150);
+	Mat src = imread("3dIMG_ 2_resize.jpg");
+	//Rect rect(480, 300, 1350 - 480, 900 - 300);
+	//Mat src = imread("64_¸´ÔÓ±³¾°.jpg");
 	Mat src_lab;
 	cvtColor(src, src_lab, CV_BGR2Lab); //ÊµÑé×ª»»µ½LAB¿Õ¼ä
 	

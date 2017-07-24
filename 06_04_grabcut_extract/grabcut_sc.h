@@ -1,51 +1,21 @@
-/*M///////////////////////////////////////////////////////////////////////////////////////
-//
-//  IMPORTANT: READ BEFORE DOWNLOADING, COPYING, INSTALLING OR USING.
-//
-//  By downloading, copying, installing or using the software you agree to this license.
-//  If you do not agree to this license, do not download, install,
-//  copy or use the software.
-//
-//
-//                        Intel License Agreement
-//                For Open Source Computer Vision Library
-//
-// Copyright (C) 2000, Intel Corporation, all rights reserved.
-// Third party copyrights are property of their respective owners.
-//
-// Redistribution and use in source and binary forms, with or without modification,
-// are permitted provided that the following conditions are met:
-//
-//   * Redistribution's of source code must retain the above copyright notice,
-//     this list of conditions and the following disclaimer.
-//
-//   * Redistribution's in binary form must reproduce the above copyright notice,
-//     this list of conditions and the following disclaimer in the documentation
-//     and/or other materials provided with the distribution.
-//
-//   * The name of Intel Corporation may not be used to endorse or promote products
-//     derived from this software without specific prior written permission.
-//
-// This software is provided by the copyright holders and contributors "as is" and
-// any express or implied warranties, including, but not limited to, the implied
-// warranties of merchantability and fitness for a particular purpose are disclaimed.
-// In no event shall the Intel Corporation or contributors be liable for any direct,
-// indirect, incidental, special, exemplary, or consequential damages
-// (including, but not limited to, procurement of substitute goods or services;
-// loss of use, data, or profits; or business interruption) however caused
-// and on any theory of liability, whether in contract, strict liability,
-// or tort (including negligence or otherwise) arising in any way out of
-// the use of this software, even if advised of the possibility of such damage.
-//
-//M*/
-
-//#include "precomp.hpp"  
 #include "gcgraph.hpp"  
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <limits>  
 using namespace cv;
-
+class GMM;
+static double calcBeta(const Mat& img);
+static void calcNWeights(const Mat& img, Mat& leftW, Mat& upleftW, Mat& upW,
+	Mat& uprightW, double beta, double gamma);
+static void checkMask(const Mat& img, const Mat& mask);
+void grabCut(InputArray _img, InputOutputArray _mask, Rect rect,
+	InputOutputArray _bgdModel, InputOutputArray _fgdModel,
+	int iterCount, int mode);
+static void estimateSegmentation(GCGraph<double>& graph, Mat& mask);
+static void constructGCGraph(const Mat& img, const Mat& mask, 
+	const GMM& bgdGMM, const GMM& fgdGMM, double lambda,
+	const Mat& leftW, const Mat& upleftW, const Mat& upW, 
+	const Mat& uprightW,GCGraph<double>& graph);
 /*
 This is implementation of image segmentation algorithm GrabCut described in
 "GrabCut — Interactive Foreground Extraction using Iterated Graph Cuts".
@@ -464,7 +434,7 @@ static void initGMMs(const Mat& img, const Mat& mask, GMM& bgdGMM, GMM& fgdGMM)
 	//kmeans的输出为bgdLabels，里面保存的是输入样本集中每一个样本对应的类标签（样本聚为componentsCount类后）  
 	Mat _bgdSamples((int)bgdSamples.size(), 3, CV_32FC1, &bgdSamples[0][0]); //把前景和背景像素分别创建一个矩阵，一个像素一行，三列分别是RGB
 	kmeans(_bgdSamples, GMM::componentsCount, bgdLabels, //执行K_means，直接对前景和背景像素各自分为5类
-		TermCriteria(CV_TERMCRIT_ITER, kMeansItCount, 0.0), 0, kMeansType);
+		TermCriteria(CV_TERMCRIT_ITER, kMeansItCount, 0.0), 0, kMeansType); //所以这里k_means还是就是只对颜色信息进行了聚类，应该还可以加入距离信息吧
 	Mat _fgdSamples((int)fgdSamples.size(), 3, CV_32FC1, &fgdSamples[0][0]);
 	kmeans(_fgdSamples, GMM::componentsCount, fgdLabels,
 		TermCriteria(CV_TERMCRIT_ITER, kMeansItCount, 0.0), 0, kMeansType);
@@ -657,51 +627,55 @@ GC_INIT_WITH_RECT（=0），用矩形窗初始化GrabCut；
 GC_INIT_WITH_MASK（=1），用掩码图像初始化GrabCut；
 GC_EVAL（=2），执行分割。
 */
-void cv::grabCut(InputArray _img, InputOutputArray _mask, Rect rect,
-	InputOutputArray _bgdModel, InputOutputArray _fgdModel,
-	int iterCount, int mode)
+
+namespace yxp_utility
 {
-	Mat img = _img.getMat();
-	Mat& mask = _mask.getMatRef();
-	Mat& bgdModel = _bgdModel.getMatRef();
-	Mat& fgdModel = _fgdModel.getMatRef();
-
-	if (img.empty())
-		CV_Error(CV_StsBadArg, "image is empty");
-	if (img.type() != CV_8UC3)
-		CV_Error(CV_StsBadArg, "image mush have CV_8UC3 type");
-
-	GMM bgdGMM(bgdModel), fgdGMM(fgdModel);
-	Mat compIdxs(img.size(), CV_32SC1);
-
-	if (mode == GC_INIT_WITH_RECT || mode == GC_INIT_WITH_MASK)
+	void grabCut(InputArray _img, InputOutputArray _mask, Rect rect,
+		InputOutputArray _bgdModel, InputOutputArray _fgdModel,
+		int iterCount, int mode)
 	{
-		if (mode == GC_INIT_WITH_RECT)
-			initMaskWithRect(mask, img.size(), rect);
-		else // flag == GC_INIT_WITH_MASK  
+		Mat img = _img.getMat();
+		Mat& mask = _mask.getMatRef();
+		Mat& bgdModel = _bgdModel.getMatRef();
+		Mat& fgdModel = _fgdModel.getMatRef();
+
+		if (img.empty())
+			CV_Error(CV_StsBadArg, "image is empty");
+		if (img.type() != CV_8UC3)
+			CV_Error(CV_StsBadArg, "image mush have CV_8UC3 type");
+
+		GMM bgdGMM(bgdModel), fgdGMM(fgdModel);
+		Mat compIdxs(img.size(), CV_32SC1);
+
+		if (mode == GC_INIT_WITH_RECT || mode == GC_INIT_WITH_MASK)
+		{
+			if (mode == GC_INIT_WITH_RECT)
+				initMaskWithRect(mask, img.size(), rect);
+			else // flag == GC_INIT_WITH_MASK  
+				checkMask(img, mask);
+			initGMMs(img, mask, bgdGMM, fgdGMM);
+		}
+
+		if (iterCount <= 0)
+			return;
+
+		if (mode == GC_EVAL)
 			checkMask(img, mask);
-		initGMMs(img, mask, bgdGMM, fgdGMM);
-	}
 
-	if (iterCount <= 0)
-		return;
+		const double gamma = 50;
+		const double lambda = 9 * gamma;
+		const double beta = calcBeta(img);
 
-	if (mode == GC_EVAL)
-		checkMask(img, mask);
+		Mat leftW, upleftW, upW, uprightW;
+		calcNWeights(img, leftW, upleftW, upW, uprightW, beta, gamma);
 
-	const double gamma = 50;
-	const double lambda = 9 * gamma;
-	const double beta = calcBeta(img);
-
-	Mat leftW, upleftW, upW, uprightW;
-	calcNWeights(img, leftW, upleftW, upW, uprightW, beta, gamma);
-
-	for (int i = 0; i < iterCount; i++)
-	{
-		GCGraph<double> graph;
-		assignGMMsComponents(img, mask, bgdGMM, fgdGMM, compIdxs);
-		learnGMMs(img, mask, compIdxs, bgdGMM, fgdGMM);
-		constructGCGraph(img, mask, bgdGMM, fgdGMM, lambda, leftW, upleftW, upW, uprightW, graph);
-		estimateSegmentation(graph, mask);
+		for (int i = 0; i < iterCount; i++)
+		{
+			GCGraph<double> graph;
+			assignGMMsComponents(img, mask, bgdGMM, fgdGMM, compIdxs);
+			learnGMMs(img, mask, compIdxs, bgdGMM, fgdGMM);
+			constructGCGraph(img, mask, bgdGMM, fgdGMM, lambda, leftW, upleftW, upW, uprightW, graph);
+			estimateSegmentation(graph, mask);
+		}
 	}
 }

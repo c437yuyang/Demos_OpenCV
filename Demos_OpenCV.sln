@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "09_矢量数据类型", "09
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10_01_kmeans_official_example", "10_01_kmeans_official_example\10_01_kmeans_official_example.vcxproj", "{8B7850FE-EC2E-427A-BBF1-E941B9739CDC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "06_04_grabcut_extract", "06_04_grabcut_extract\06_04_grabcut_extract.vcxproj", "{9502B1FC-B2AC-439A-9878-3BD0D14BCE9A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -121,6 +123,14 @@ Global
 		{8B7850FE-EC2E-427A-BBF1-E941B9739CDC}.Release|x64.Build.0 = Release|x64
 		{8B7850FE-EC2E-427A-BBF1-E941B9739CDC}.Release|x86.ActiveCfg = Release|Win32
 		{8B7850FE-EC2E-427A-BBF1-E941B9739CDC}.Release|x86.Build.0 = Release|Win32
+		{9502B1FC-B2AC-439A-9878-3BD0D14BCE9A}.Debug|x64.ActiveCfg = Debug|x64
+		{9502B1FC-B2AC-439A-9878-3BD0D14BCE9A}.Debug|x64.Build.0 = Debug|x64
+		{9502B1FC-B2AC-439A-9878-3BD0D14BCE9A}.Debug|x86.ActiveCfg = Debug|Win32
+		{9502B1FC-B2AC-439A-9878-3BD0D14BCE9A}.Debug|x86.Build.0 = Debug|Win32
+		{9502B1FC-B2AC-439A-9878-3BD0D14BCE9A}.Release|x64.ActiveCfg = Release|x64
+		{9502B1FC-B2AC-439A-9878-3BD0D14BCE9A}.Release|x64.Build.0 = Release|x64
+		{9502B1FC-B2AC-439A-9878-3BD0D14BCE9A}.Release|x86.ActiveCfg = Release|Win32
+		{9502B1FC-B2AC-439A-9878-3BD0D14BCE9A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

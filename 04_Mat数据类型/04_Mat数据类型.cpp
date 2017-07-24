@@ -116,6 +116,13 @@ int main()
 	m9.setTo(Scalar(4, 5, 6));
 	printMat(m9);
 	//初始化方式7
+	Mat m10;
+	m10.create(5, 5, CV_8UC1);
+	m10 = 255; //直接赋值，所有元素都是这个值
+	printMat(m10);
+	//设置ROI区域整体赋值
+	m10(Rect(1, 1, 3, 3)) = 0;
+	printMat(m10);
 
 
 	//拷贝来自opencv帮助文档，Mat支持的操作:

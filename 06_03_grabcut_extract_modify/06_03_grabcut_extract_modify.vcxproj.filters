@@ -15,13 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="grabcut.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+    <Image Include="3dIMG_ 2_resize.jpg">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gcgraph.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="grabcut_sc.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

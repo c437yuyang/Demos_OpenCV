@@ -61,14 +61,14 @@ int main()
 	slic.PerformSLICO_ForGivenK(imgBuff, w, h, kLables, numLabels, nSpNum, weight);
 
 #pragma region 可视化SLIC结果1，用边界的方式画出来
-	UINT* SegmentResult = new UINT[w*h];
-	slic.DrawContoursAroundSegments(SegmentResult, kLables, w, h, color);
-	Mat SLICResult = src.clone();
-	Vec3b red(0, 0, 255);
-	for (int i = 0; i != h; ++i)
-		for (int j = 0; j != w; ++j)
-			if (SegmentResult[i*w + j] == color)
-				SLICResult.at<Vec3b>(i, j) = red;
+	//UINT* SegmentResult = new UINT[w*h];
+	//slic.DrawContoursAroundSegments(SegmentResult, kLables, w, h, color);
+	//Mat SLICResult = src.clone();
+	//Vec3b red(0, 0, 255);
+	//for (int i = 0; i != h; ++i)
+	//	for (int j = 0; j != w; ++j)
+	//		if (SegmentResult[i*w + j] == color)
+	//			SLICResult.at<Vec3b>(i, j) = red;
 #pragma endregion
 
 #pragma region 可视化方式2
@@ -91,7 +91,13 @@ int main()
 #pragma endregion
 
 	//形成一个新的mat,由超像素组成,一行一个像素，3列分别是rgb值
+	//更正:不能一行一个，必须保持和原图像一样，有行数和列数才行,但是求出的超像素的数目和之前设定的通常都不一致，要如何设置呢？（复制边界可行吗？）
 	//先统计每个超像素的信息，求出rgb值
+
+	double step = sqrt(double(w*h) / double(nSpNum));
+	int cols = static_cast<int> (w / step);
+	int rows = static_cast<int> (h / step);
+	if (cols*rows != nSpNum) return -16;
 
 	Mat src_sp(numLabels, 1, CV_8UC3);
 	vector<Vec3d> rgbInfo(numLabels);

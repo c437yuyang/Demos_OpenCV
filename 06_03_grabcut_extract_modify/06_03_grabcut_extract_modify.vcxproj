@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{9A58D055-1F03-4B4F-B57F-951F6A106A55}</ProjectGuid>
+    <ProjectGuid>{EDD6B08E-5C1E-4D82-B272-81466FE01352}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>My06_02_grabcut_official_example</RootNamespace>
+    <RootNamespace>My06_03_grabcut_extract_modify</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -58,11 +58,11 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\..\帮助文档\OpenCV帮助文档\OpenCV_VS_PropertySheet\OpenCV249_DEBUG_X86_VC12.props" />
+    <Import Project="..\..\..\..\帮助文档\OpenCV帮助文档\OpenCV_VS_PropertySheet\OpenCV2413_DEBUG_X86_VC14.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\..\..\..\帮助文档\OpenCV帮助文档\OpenCV_VS_PropertySheet\OpenCV249_RELEASE_X86_VC12.props" />
+    <Import Project="..\..\..\..\帮助文档\OpenCV帮助文档\OpenCV_VS_PropertySheet\OpenCV2413_RELEASE_X86_VC14.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -148,10 +148,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="grabcut.cpp" />
+    <Image Include="3dIMG_ 2_resize.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="gcgraph.hpp" />
+    <ClInclude Include="grabcut_sc.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

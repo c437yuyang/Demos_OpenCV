@@ -257,6 +257,7 @@ void GMM::calcInverseCovAndDeterm(int ci)
 //像素的差别可能就会比较小，这时候需要乘以一个较大的beta来放大这个差别，  
 //在高对比度时，则需要缩小本身就比较大的差别。  
 //所以我们需要分析整幅图像的对比度来确定参数beta，具体的见论文公式（5）。  
+//这个对比度其实可以理解为是整图的梯度？
 /*
 Calculate beta - parameter of GrabCut algorithm.
 beta = 1/(2*avg(sqr(||color[i] - color[j]||)))
@@ -310,6 +311,7 @@ static double calcBeta(const Mat& img)
 Calculate weights of noterminal vertices of graph.
 beta and gamma - parameters of GrabCut algorithm.
 */
+//可以看到这里用到的信息有距离(邻域内的距离)和颜色(diff)
 static void calcNWeights(const Mat& img, Mat& leftW, Mat& upleftW, Mat& upW,
 	Mat& uprightW, double beta, double gamma)
 {
@@ -471,7 +473,7 @@ static void assignGMMsComponents(const Mat& img, const Mat& mask, const GMM& bgd
 	}
 }
 
-//论文中：迭代最小化算法step 2：从每个高斯模型的像素样本集中学习每个高斯模型的参数  
+//论文中：迭代最小化算法step 2：从每个高斯模型的像素样本集中学习每个高斯模型的参数
 /*
 Learn GMMs parameters.
 前面的initGMM是利用初始mask和k_means对图像进行初始的划分，
@@ -505,7 +507,7 @@ static void learnGMMs(const Mat& img, const Mat& mask, const Mat& compIdxs, GMM&
 
 //通过计算得到的能量项构建图，图的顶点为像素点，图的边由两部分构成，  
 //一类边是：每个顶点与Sink汇点t（代表背景）和源点Source（代表前景）连接的边，  
-//这类边的权值通过Gibbs能量项的第一项能量项来表示。  
+//这类边的权值通过Gibbs能量项的第一项能量项来表示(可以看到其实就是color带进GMM模型计算所属分类，只用到颜色信息，没有位置信息)。  
 //另一类边是：每个顶点与其邻域顶点连接的边，这类边的权值通过Gibbs能量项的第二项能量项来表示。  
 /*
 Construct GCGraph
@@ -653,7 +655,7 @@ namespace yxp_utility
 				initMaskWithRect(mask, img.size(), rect);
 			else // flag == GC_INIT_WITH_MASK  
 				checkMask(img, mask);
-			initGMMs(img, mask, bgdGMM, fgdGMM);
+			initGMMs(img, mask, bgdGMM, fgdGMM); //通过k_means初始化高斯模型
 		}
 
 		if (iterCount <= 0)
@@ -665,10 +667,10 @@ namespace yxp_utility
 		const double gamma = 50;
 		const double lambda = 9 * gamma;
 		const double beta = calcBeta(img);
+		//const double beta = 0.0;
 
 		Mat leftW, upleftW, upW, uprightW;
-		calcNWeights(img, leftW, upleftW, upW, uprightW, beta, gamma);
-
+		calcNWeights(img, leftW, upleftW, upW, uprightW, beta, gamma); //这个平滑项的权值只和像素本身有关，不会发生变化(变化的只有高斯模型)，所以放在迭代之外
 		for (int i = 0; i < iterCount; i++)
 		{
 			GCGraph<double> graph;
@@ -677,5 +679,6 @@ namespace yxp_utility
 			constructGCGraph(img, mask, bgdGMM, fgdGMM, lambda, leftW, upleftW, upW, uprightW, graph);
 			estimateSegmentation(graph, mask);
 		}
+
 	}
 }

@@ -13,6 +13,7 @@ int main()
 	while (i <n)
 	{
 		cap >> frame;
+		cout << frame.rows << "," << frame.cols << endl;;
 		resize(frame, frame, cv::Size(0, 0), 0.3, 0.3);
 		cv::imshow("image",frame);
 		++i;

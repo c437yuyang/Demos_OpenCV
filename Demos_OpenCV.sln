@@ -33,6 +33,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11_01_数学函数", "11_01
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "12_01_VedioCapture", "12_01_VedioCapture\12_01_VedioCapture.vcxproj", "{7BF0FE43-1C66-4890-83E9-6AA9DACE20B8}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "00_Temp", "00_Temp\00_Temp.vcxproj", "{86E7DE08-E25F-4376-BA6E-519C38346DF8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -161,6 +163,14 @@ Global
 		{7BF0FE43-1C66-4890-83E9-6AA9DACE20B8}.Release|x64.Build.0 = Release|x64
 		{7BF0FE43-1C66-4890-83E9-6AA9DACE20B8}.Release|x86.ActiveCfg = Release|Win32
 		{7BF0FE43-1C66-4890-83E9-6AA9DACE20B8}.Release|x86.Build.0 = Release|Win32
+		{86E7DE08-E25F-4376-BA6E-519C38346DF8}.Debug|x64.ActiveCfg = Debug|x64
+		{86E7DE08-E25F-4376-BA6E-519C38346DF8}.Debug|x64.Build.0 = Debug|x64
+		{86E7DE08-E25F-4376-BA6E-519C38346DF8}.Debug|x86.ActiveCfg = Debug|Win32
+		{86E7DE08-E25F-4376-BA6E-519C38346DF8}.Debug|x86.Build.0 = Debug|Win32
+		{86E7DE08-E25F-4376-BA6E-519C38346DF8}.Release|x64.ActiveCfg = Release|x64
+		{86E7DE08-E25F-4376-BA6E-519C38346DF8}.Release|x64.Build.0 = Release|x64
+		{86E7DE08-E25F-4376-BA6E-519C38346DF8}.Release|x86.ActiveCfg = Release|Win32
+		{86E7DE08-E25F-4376-BA6E-519C38346DF8}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

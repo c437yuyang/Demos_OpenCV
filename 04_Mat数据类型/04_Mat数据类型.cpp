@@ -156,8 +156,6 @@ int main()
 
 	//	Mat_<destination_type>() constructors to cast the result to the proper type.
 
-
-
 	cv::waitKey(0);
 	return 0;
 }

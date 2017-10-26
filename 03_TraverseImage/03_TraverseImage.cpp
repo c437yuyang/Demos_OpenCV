@@ -32,7 +32,6 @@ int main()
 	time_start = cv::getTickCount();
 	for (int i = 0; i != lena.rows; ++i)//每一行
 	{
-
 		for (int j = 0; j != lena.cols; ++j)//行上的每一个像素
 		{
 			lena_withNoise.at<Vec3b>(j, i) = lena.at<Vec3b>(j, i);

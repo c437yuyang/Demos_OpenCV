@@ -34,7 +34,8 @@ int main()
 	{
 		for (int j = 0; j != lena.cols; ++j)//行上的每一个像素
 		{
-			lena_withNoise.at<Vec3b>(j, i) = lena.at<Vec3b>(j, i);
+			//at遍历，第一个坐标是y,第二个坐标是x,最终其实就是第一个坐标是行，第二个坐标是列
+			lena_withNoise.at<Vec3b>(i, j) = lena.at<Vec3b>(i,j);
 		}
 	}
 	time_end = cv::getTickCount() - time_start;

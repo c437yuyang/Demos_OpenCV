@@ -5,7 +5,12 @@
 class Kmeans
 {
 public:
-	static cv::Mat DoKMeansAlgorithm(const cv::Mat & src, int clusters);
+	
+	typedef enum Feature
+	{
+		BGR, BGRXY
+	}Feature;
+	static cv::Mat DoKMeansAlgorithm(const cv::Mat & src, int clusters, bool pre_blur, Feature feature);
 };
 
 

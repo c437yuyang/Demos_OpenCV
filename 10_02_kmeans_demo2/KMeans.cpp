@@ -1,21 +1,40 @@
 #include "KMeans.h"
 
-cv::Mat Kmeans::DoKMeansAlgorithm(const cv::Mat & src, int cluster_num)
+cv::Mat Kmeans::DoKMeansAlgorithm(const cv::Mat & src, int cluster_num, bool pre_blur, Feature feature)
 {
 	cv::Mat blured;
-	blur(src, blured, cv::Size(11, 11));
+	if (pre_blur)
+		blur(src, blured, cv::Size(11, 11));
+	else
+		blured = src.clone();
 	//p是特征矩阵，每行表示一个特征，每个特征对应src中每个像素点的(x,y,r,g,b共5维)
-	cv::Mat p = cv::Mat::zeros(src.cols*src.rows, 3, CV_32F);    //初始化全0矩阵
+	cv::Mat p;
+	if (feature == Feature::BGR)
+		p = cv::Mat::zeros(src.cols*src.rows, 3, CV_32F);    //初始化全0矩阵
+	else if (feature == Feature::BGRXY)
+		p = cv::Mat::zeros(src.cols*src.rows, 5, CV_32F);    //初始化全0矩阵
+
 	cv::Mat bestLabels, centers, clustered;
 	std::vector<cv::Mat> bgr;
 	cv::split(blured, bgr);    //分隔出src的三个通道
 
-	for (int i = 0; i < src.cols*src.rows; i++)
-	{
-		p.at<float>(i, 0) = bgr[0].data[i] / 255.0;
-		p.at<float>(i, 1) = bgr[1].data[i] / 255.0;
-		p.at<float>(i, 2) = bgr[2].data[i] / 255.0;
-	}
+	if (feature == Feature::BGR)
+		for (int i = 0; i < src.cols*src.rows; i++)
+		{
+			p.at<float>(i, 0) = bgr[0].data[i] / 255.0; //B
+			p.at<float>(i, 1) = bgr[1].data[i] / 255.0; //G
+			p.at<float>(i, 2) = bgr[2].data[i] / 255.0; //R
+
+		}
+	else if (feature == Feature::BGRXY)
+		for (int i = 0; i < src.cols*src.rows; i++)
+		{
+			p.at<float>(i, 0) = bgr[0].data[i] / 255.0;
+			p.at<float>(i, 1) = bgr[1].data[i] / 255.0;
+			p.at<float>(i, 2) = bgr[2].data[i] / 255.0;
+			p.at<float>(i, 3) = i % src.cols * 1.0 / src.cols; //X
+			p.at<float>(i, 4) = i / src.cols * 1.0 / src.rows; //Y
+		}
 
 	//计算时间
 	double t = (double)cvGetTickCount();

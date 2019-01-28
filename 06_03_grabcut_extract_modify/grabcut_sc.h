@@ -28,7 +28,7 @@ GMM - Gaussian Mixture Model
 class GMM
 {
 public:
-	static const int componentsCount = 5;
+	static const int componentsCount = 10;
 
 	GMM(Mat& _model);
 	double operator()(const Vec3d color) const;
@@ -445,7 +445,7 @@ static void initGMMs(const Mat& img, const Mat& mask, GMM& bgdGMM, GMM& fgdGMM)
 	bgdGMM.initLearning();//sum和prods归零，方便后面计算
 	for (int i = 0; i < (int)bgdSamples.size(); i++)
 		bgdGMM.addSample(bgdLabels.at<int>(i, 0), bgdSamples[i]);//统计sums和prods
-	bgdGMM.endLearning(); //计算协方差矩阵和均值
+	bgdGMM.endLearning(); //根据sums和prods来计算协方差矩阵和均值
 
 	fgdGMM.initLearning();
 	for (int i = 0; i < (int)fgdSamples.size(); i++)
@@ -655,7 +655,7 @@ namespace yxp_utility
 				initMaskWithRect(mask, img.size(), rect);
 			else // flag == GC_INIT_WITH_MASK  
 				checkMask(img, mask);
-			initGMMs(img, mask, bgdGMM, fgdGMM); //通过k_means初始化高斯模型
+			initGMMs(img, mask, bgdGMM, fgdGMM); //通过k_means初始化高斯模型,具体就是先K_means确定每个像素属于哪个模型，然后再根据这些像素的值计算GMM的参数
 		}
 
 		if (iterCount <= 0)
@@ -673,11 +673,15 @@ namespace yxp_utility
 		calcNWeights(img, leftW, upleftW, upW, uprightW, beta, gamma); //这个平滑项的权值只和像素本身有关，不会发生变化(变化的只有高斯模型)，所以放在迭代之外
 		for (int i = 0; i < iterCount; i++)
 		{
+		
+			assignGMMsComponents(img, mask, bgdGMM, fgdGMM, compIdxs); //根据mask为每个像素分配GMM中所属的高斯模型，kn保存在Mat compIdxs中
+			learnGMMs(img, mask, compIdxs, bgdGMM, fgdGMM); 
+			//前面的initGMM是利用初始mask和k_means对图像进行初始的划分，
+			//这里的是在step1:assignGMMsComponents为每个像素分配所属模型后之后，
+			//再来更新GMM
 			GCGraph<double> graph;
-			assignGMMsComponents(img, mask, bgdGMM, fgdGMM, compIdxs);
-			learnGMMs(img, mask, compIdxs, bgdGMM, fgdGMM);
-			constructGCGraph(img, mask, bgdGMM, fgdGMM, lambda, leftW, upleftW, upW, uprightW, graph);
-			estimateSegmentation(graph, mask);
+			constructGCGraph(img, mask, bgdGMM, fgdGMM, lambda, leftW, upleftW, upW, uprightW, graph);//根据这些模型构建图
+			estimateSegmentation(graph, mask); //执行max-flow分割，更新mask
 		}
 
 	}

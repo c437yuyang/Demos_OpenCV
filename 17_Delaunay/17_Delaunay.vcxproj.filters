@@ -15,16 +15,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="17_Delaunay.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="YXPFileIO.cpp">
+    <ClCompile Include="17_Delaunay_2.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="YXPFileIO.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

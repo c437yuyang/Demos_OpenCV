@@ -15,16 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="main1.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="YXPFileIO.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="YXPFileIO.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

@@ -24,6 +24,7 @@ int main()
 	img = imread(lpImageName, CV_LOAD_IMAGE_UNCHANGED);//加载图像
 
 	namedWindow(lpwindowname, WINDOW_AUTOSIZE);//创建窗口
+
 	imshow(lpwindowname, img);//在已经创建的窗口中显示图像
 	setMouseCallback(lpwindowname, on_mousemove, 0);//响应鼠标事件
 	waitKey(0);

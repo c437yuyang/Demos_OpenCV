@@ -20,8 +20,12 @@ static void getBinMask(const Mat& comMask, Mat& binMask)
 }
 int main()
 {
-	Rect rect(170, 150, 700 - 170, 500 - 150);
-	Mat src = imread("3dIMG_ 2_resize.jpg");
+	//Rect rect(170, 150, 700 - 170, 500 - 150);
+	//Mat src = imread("3dIMG_ 2_resize.jpg");
+
+	Rect rect(78, 47, 348 ,471);
+	Mat src = imread("lena.jpg");
+
 	//cvtColor(src, src, CV_BGR2Lab);
 	//Rect rect(480, 300, 1350 - 480, 900 - 300);
 	//Mat src = imread("64_复杂背景.jpg");
@@ -33,8 +37,8 @@ int main()
 	//binMask = mask.clone(); //必须只取最低位的mask，否则就是直接指定的矩形取到
 	binMask.convertTo(binMask, CV_8UC1, 255.0);
 	src.copyTo(dst_rgb_it3, binMask);
-
-
+	imshow("res", dst_rgb_it3);
+	waitKey(0);
 	system("pause");
 	return 0;
 }

@@ -19,6 +19,4 @@ int main()
 		++i;
 		cv::waitKey(0);
 	}
-
-
 }
